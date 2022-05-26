@@ -7,9 +7,12 @@ defmodule W1.Application do
 
   @impl true
   def start(_type, _args) do
+    endpoint_config = Application.fetch_env!(:w1, W1.Endpoint)
+    http_options = Keyword.fetch!(endpoint_config, :http)
+
     children = [
-      # Starts a worker by calling: W1.Worker.start_link(arg)
-      # {W1.Worker, arg}
+      W1.Repo,
+      {Plug.Cowboy, scheme: :http, plug: W1.Endpoint, options: http_options}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
