@@ -7,11 +7,13 @@ defmodule W1.Application do
 
   @impl true
   def start(_type, _args) do
+    repo_config = Application.fetch_env!(:w1, W1.Repo)
     endpoint_config = Application.fetch_env!(:w1, W1.Endpoint)
     http_options = Keyword.fetch!(endpoint_config, :http)
 
     children = [
       W1.Repo,
+      {W1.Release.Migrator, migrate: repo_config[:migrate]},
       {Plug.Cowboy, scheme: :http, plug: W1.Endpoint, options: http_options}
     ]
 

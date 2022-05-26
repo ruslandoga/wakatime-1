@@ -9,6 +9,26 @@ import Config
 
 config :logger, :console, format: "$time [$level] $message\n"
 
+if config_env() == :prod do
+  config :logger, level: :info
+
+  config :w1, W1.Repo,
+    database: System.fetch_env!("DATABASE_URL"),
+    migrate: true
+
+  port = String.to_integer(System.get_env("PORT") || "4000")
+
+  config :w1, W1.Endpoint,
+    http: [
+      # Enable IPv6 and bind on all interfaces.
+      # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
+      # See the documentation on https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html
+      # for details about using IPv6 vs IPv4 and loopback vs public addresses.
+      ip: {0, 0, 0, 0, 0, 0, 0, 0},
+      port: 4000
+    ]
+end
+
 if config_env() == :dev do
   config :w1, W1.Repo,
     database: System.get_env("DATABASE_URL") || "ecto://postgres:postgres@localhost:5432/w1_dev",
