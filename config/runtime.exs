@@ -13,7 +13,7 @@ if config_env() == :prod do
   config :logger, level: :info
 
   config :w1, W1.Repo,
-    database: System.fetch_env!("DATABASE_URL"),
+    url: System.fetch_env!("DATABASE_URL"),
     migrate: true
 
   port = String.to_integer(System.get_env("PORT") || "4000")
@@ -31,9 +31,7 @@ end
 
 if config_env() == :dev do
   config :w1, W1.Repo,
-    database: System.get_env("DATABASE_URL") || "ecto://postgres:postgres@localhost:5432/w1_dev",
-    username: "postgres",
-    password: "postgres",
+    url: System.get_env("DATABASE_URL") || "ecto://postgres:postgres@localhost:5432/w1_dev",
     show_sensitive_data_on_connection_error: true,
     pool_size: 10
 
