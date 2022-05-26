@@ -67,6 +67,43 @@ INHERITS (public.heartbeats);
 
 
 --
+-- Name: durations; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.durations AS
+ WITH start_grp AS (
+         SELECT heartbeats."time",
+            heartbeats.project,
+            heartbeats.entity,
+            heartbeats.type,
+            heartbeats.branch,
+            heartbeats.language,
+                CASE
+                    WHEN ((heartbeats."time" - lag(heartbeats."time", 1) OVER (ORDER BY heartbeats."time")) > '00:05:00'::interval) THEN 1
+                    ELSE 0
+                END AS grp_start
+           FROM public.heartbeats
+        ), assign_grp AS (
+         SELECT start_grp."time",
+            start_grp.project,
+            start_grp.entity,
+            start_grp.type,
+            start_grp.branch,
+            start_grp.language,
+            sum(start_grp.grp_start) OVER (ORDER BY start_grp."time") AS duration_id
+           FROM start_grp
+        )
+ SELECT assign_grp."time",
+    assign_grp.project,
+    assign_grp.entity,
+    assign_grp.type,
+    assign_grp.branch,
+    assign_grp.language,
+    assign_grp.duration_id
+   FROM assign_grp;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -119,3 +156,4 @@ CREATE TRIGGER ts_insert_blocker BEFORE INSERT ON public.heartbeats FOR EACH ROW
 INSERT INTO public."schema_migrations" (version) VALUES (20220526142121);
 INSERT INTO public."schema_migrations" (version) VALUES (20220526142547);
 INSERT INTO public."schema_migrations" (version) VALUES (20220526142639);
+INSERT INTO public."schema_migrations" (version) VALUES (20220526154629);
