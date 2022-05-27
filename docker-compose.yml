@@ -19,16 +19,21 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=natel-discrete-panel
 
       - GF_DATABASE_TYPE=postgres
       - GF_DATABASE_HOST=pg:5432
       - GF_DATABASE_USER=postgres
       - GF_DATABASE_PASSWORD=postgres
       - GF_DATABASE_SSL_MODE=disable
+
+      # I set DATASOURCE_DATABASE=w1_dev for development
+      - DATASOURCE_DATABASE=${DATASOURCE_DATABASE:-w1}
     
     volumes:
-      - grafanadata:/var/lib/grafana
+      - ./grafana/postgres.yml:/etc/grafana/provisioning/datasources/postgres.yml
+      - ./grafana/dashboards:/etc/grafana/dashboards
+      - ./grafana/wakatime.yml:/etc/grafana/provisioning/dashboards/wakatime.yml
 
 volumes:
   pgdata:
-  grafanadata:
