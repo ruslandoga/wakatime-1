@@ -1,0 +1,25 @@
+apiVersion: 1
+
+# https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-config-file
+datasources:
+  - name: PostgreSQL
+    type: postgres
+    access: proxy
+    uid: R1A1L7r7z
+    orgId: 1
+    url: pg:5432
+    user: postgres
+    database: ${DATASOURCE_DATABASE}
+    isDefault: true
+    jsonData:
+      postgresVersion: 1200
+      sslmode: disable
+      timescaledb: true
+      tlsAuth: false
+      tlsAuthWithCACert: false
+      tlsConfigurationMethod: file-path
+      tlsSkipVerify: true
+    secureJsonData:
+      password: postgres
+    version: 1
+    readOnly: false
