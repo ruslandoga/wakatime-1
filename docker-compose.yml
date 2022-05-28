@@ -35,5 +35,18 @@ services:
       - ./grafana/dashboards:/etc/grafana/dashboards
       - ./grafana/wakatime.yml:/etc/grafana/provisioning/dashboards/wakatime.yml
 
+  ingester:
+    # image: ghcr.io/ruslandoga/wakatime-1:master
+    build: .
+    restart: unless-stopped
+
+    environment:
+      - DATABASE_URL=ecto://postgres:postgres@pg:5432/w1
+      # set LOG_LEVEL=info to see more logs
+      - LOG_LEVEL=warn 
+
+    ports:
+      - 4000:4000
+
 volumes:
   pgdata:
