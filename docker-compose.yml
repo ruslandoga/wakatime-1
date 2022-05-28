@@ -8,9 +8,7 @@ services:
     volumes:
       - ./pg-init:/docker-entrypoint-initdb.d
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
-  
+
   grafana:
     image: grafana/grafana:8.5.3
     restart: unless-stopped
@@ -42,8 +40,9 @@ services:
 
     environment:
       - DATABASE_URL=ecto://postgres:postgres@pg:5432/w1
-      # set LOG_LEVEL=info to see more logs
-      - LOG_LEVEL=warn 
+      # set LOG_LEVEL=debug to see more logs
+      - LOG_LEVEL=warn
+      - PORT=4000 
 
     ports:
       - 4000:4000
