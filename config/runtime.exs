@@ -10,7 +10,12 @@ import Config
 config :logger, :console, format: "$time [$level] $message\n"
 
 if config_env() == :prod do
-  config :logger, level: :info
+  log_level =
+    if level = System.get_env("LOG_LEVEL") || "info" do
+      String.to_existing_atom(level)
+    end
+
+  config :logger, level: log_level
 
   config :w1, W1.Repo,
     url: System.fetch_env!("DATABASE_URL"),
